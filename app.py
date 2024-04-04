@@ -47,7 +47,7 @@ def get_language_names():
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
     return user.get_language_from_abbr(lang)
-@app.route("/get_full_öanguage_info",methods=['POST'])
+@app.route("/get_full_language_info",methods=['POST'])
 def get_language_info():
     jwt = flask.request.json.get('jwt')
     username = flask.request.json.get('user')
@@ -56,6 +56,6 @@ def get_language_info():
         user = duolingo.Duolingo(username=username, jwt=jwt)
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
-    return [user.get_languages(abbreviations=True),user.get_language_from_abbr(lang)]
+    return [user.get_languages(abbreviations=True),user.get_languages(abbreviations=False)]
 if __name__ == '__main__':
     app.run(ssl_context="adhoc",debug=True,port=5000)
