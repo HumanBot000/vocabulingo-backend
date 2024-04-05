@@ -6,6 +6,8 @@ new_source = source.replace('jwt=None', 'jwt')
 new_source = source.replace('self.jwt = None', ' ')
 exec(new_source, duolingo.__dict__)
 
+
+#todo add an defaul account and use set_username() so no pw or jwt has to be provided
 app = flask.Flask(__name__)
 
 @app.route('/')
@@ -57,5 +59,15 @@ def get_language_info():
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
     return [user.get_languages(abbreviations=True),user.get_languages(abbreviations=False)]
+@app.route("/get_known_topics",methods=['POST'])
+def get_known_topics():
+    jwt = flask.request.json.get('jwt')
+    username = flask.request.json.get('user')
+    lang = flask.request.json.get('lang')
+    try:
+        user = duolingo.Duolingo(username=username, jwt=jwt)
+    except Exception:
+        return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
+    return sorted(user.get_known_topics(lang))
 if __name__ == '__main__':
     app.run(ssl_context="adhoc",debug=True,port=5000)
