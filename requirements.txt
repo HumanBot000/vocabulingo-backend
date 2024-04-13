@@ -1,0 +1,2 @@
+flask~=2.3.3
+duolingo @ git+https://gitlab.com/JASchilz/duolingo.git@master
