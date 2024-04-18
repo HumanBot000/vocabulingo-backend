@@ -69,5 +69,15 @@ def get_known_topics():
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
     return sorted(user.get_known_topics(lang))
+@app.route("/get_vocabularies",methods=['POST'])
+def get_vocabulary():
+    jwt = flask.request.json.get('jwt')
+    username = flask.request.json.get('user')
+    lang = flask.request.json.get('lang')
+    try:
+        user = duolingo.Duolingo(username=username, jwt=jwt)
+        return user.get_vocabulary(lang)
+    except Exception:
+        return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
 if __name__ == '__main__':
     app.run(ssl_context="adhoc",debug=True,port=5000)
