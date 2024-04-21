@@ -1,2 +1,2 @@
 flask~=2.3.3
-duolingo @ git+https://gitlab.com/HumanBot000/duolingo.git@fix-get-vocabulary
+duolingo @ git+https://gitlab.com/HumanBot000/duolingo.git
