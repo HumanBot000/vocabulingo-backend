@@ -1,6 +1,9 @@
 import flask
 import duolingo
 import inspect
+
+import requests
+
 source = inspect.getsource(duolingo)
 new_source = source.replace('jwt=None', 'jwt')
 new_source = source.replace('self.jwt = None', ' ')
@@ -25,7 +28,9 @@ def check_credentials():
     username = flask.request.json.get('user')
     try:
         user = duolingo.Duolingo(username=username, jwt=jwt)
-    except Exception:   #User not found does only raise default exception
+    except requests.exceptions.ConnectTimeout:
+        return flask.Response("{'success':'False'}", status=408, mimetype='application/json')
+    except Exception as e:   #User not found does only raise default exception
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
     return flask.Response("{'success':'True'}", status=200, mimetype='application/json')
 
