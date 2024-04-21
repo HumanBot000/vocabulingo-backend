@@ -1,2 +1,2 @@
 flask~=2.3.3
-duolingo @ git+https://gitlab.com/HumanBot000/duolingo.git
+git+https://gitlab.com/HumanBot000/duolingo.git@44d4df70c99f6ac482b00878a2c2d9021e1188d8
