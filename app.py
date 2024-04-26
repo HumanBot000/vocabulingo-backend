@@ -1,3 +1,5 @@
+import json
+
 import flask
 import duolingo
 import inspect
@@ -12,7 +14,7 @@ exec(new_source, duolingo.__dict__)
 
 #todo add an defaul account and use set_username() so no pw or jwt has to be provided
 app = flask.Flask(__name__)
-
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
@@ -22,6 +24,15 @@ def jsonify_compact(*args, **kwargs):
     response.data = response.get_data(as_text=True).replace('\n', '').replace("\\","")
     return response
 
+@app.route('/get_ui_language',methods=['POST'])
+def get_ui_language():
+    jwt = flask.request.json.get('jwt')
+    username = flask.request.json.get('user')
+    try:
+        user = duolingo.Duolingo(username=username, jwt=jwt)
+    except Exception:
+        return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
+    return user.get_user_info()['ui_language']
 @app.route('/check_credentials',methods=['POST'])
 def check_credentials():
     jwt = flask.request.json.get('jwt')
@@ -81,7 +92,8 @@ def get_vocabulary():
     lang = flask.request.json.get('lang')
     try:
         user = duolingo.Duolingo(username=username, jwt=jwt)
-        return user.get_vocabulary(lang)
+        vocabs = json.dumps(user.get_vocabulary(lang,user.get_user_info()['ui_language']))
+        return flask.Response(str(vocabs), status=200, mimetype='application/json')
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
 if __name__ == '__main__':
