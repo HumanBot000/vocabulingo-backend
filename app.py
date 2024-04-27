@@ -97,4 +97,4 @@ def get_vocabulary():
     except Exception:
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
 if __name__ == '__main__':
-    app.run(ssl_context="adhoc",debug=True,port=5000)
+    app.run(ssl_context="adhoc",debug=True,port=5000,host="0.0.0.0")
