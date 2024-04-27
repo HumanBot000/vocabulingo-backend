@@ -94,7 +94,8 @@ def get_vocabulary():
         user = duolingo.Duolingo(username=username, jwt=jwt)
         vocabs = json.dumps(user.get_vocabulary(lang,user.get_user_info()['ui_language']))
         return flask.Response(str(vocabs), status=200, mimetype='application/json')
-    except Exception:
+    except Exception as e:
+        print(e)
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
 if __name__ == '__main__':
     app.run(ssl_context="adhoc",debug=True,port=5000,host="0.0.0.0")
