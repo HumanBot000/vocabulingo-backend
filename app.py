@@ -110,7 +110,24 @@ def get_vocabulary():
     except Exception as e:
         print(e)
         return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
-
-
+@app.route("/get_user_info", methods=['POST'])
+def get_user_info():
+    jwt = flask.request.json.get('jwt')
+    username = flask.request.json.get('user')
+    try:
+        user = duolingo.Duolingo(username=username, jwt=jwt)
+    except Exception:
+        return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
+    return flask.jsonify(user.get_user_info())
+@app.route("/get_daily_xp", methods=['POST'])
+def daily_xp():
+    jwt = flask.request.json.get('jwt')
+    username = flask.request.json.get('user')
+    try:
+        user = duolingo.Duolingo(username=username, jwt=jwt)
+    except Exception:
+        return flask.Response("{'success':'False'}", status=401, mimetype='application/json')
+    return flask.jsonify(user.get_daily_xp_progress())
 if __name__ == '__main__':
-    app.run(ssl_context=('server.crt', 'server.key'), debug=True, port=5000, host="0.0.0.0")
+    #app.run(ssl_context=('server.crt', 'server.key'), debug=True, port=5000, host="0.0.0.0")   #Normal Operations
+    app.run(debug=True, port=5000, host="0.0.0.0",ssl_context="adhoc") #Uncomment for developing mode
